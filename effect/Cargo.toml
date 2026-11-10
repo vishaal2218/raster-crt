@@ -1,0 +1,20 @@
+[package]
+name = "raster_crt"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+description = "Raster CRT: a free analog video and CRT screen effect for Premiere Pro and After Effects"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+after-effects = "0.4.0"
+rayon = "1.12"
+raster_engine = { path = "../engine" }
+
+[build-dependencies]
+pipl = "0.1.1"
+serde_json = "1.0.154"
+

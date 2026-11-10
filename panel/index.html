@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Raster CRT</title>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <div class="panel" id="panel">
+    <header class="panel-header">
+      <div><div class="wordmark">Raster <span>CRT</span></div><span class="wordmark-sub">Signal &amp; screen simulator</span></div>
+      <div class="header-status"><span class="led" id="led" aria-label="Not connected to Premiere"></span><span id="clip-name">Starting</span></div>
+    </header>
+    <section class="preset-bar" aria-label="Presets">
+      <button type="button" class="lcd" id="lcd" aria-label="Preset: open the preset browser" aria-expanded="false" aria-controls="browser-slot"><span class="lcd-thumb" aria-hidden="true"></span><span id="lcd-text" role="status" aria-live="polite">CONNECTING</span></button>
+      <button type="button" class="key is-icon" id="prev" aria-label="Previous preset" disabled><i data-lucide="chevron-left"></i></button>
+      <button type="button" class="key is-icon" id="next" aria-label="Next preset" disabled><i data-lucide="chevron-right"></i></button>
+      <button type="button" class="key" id="save" disabled>Save</button>
+      <button type="button" class="key" id="reset" disabled>Reset</button>
+    </section>
+    <div class="save-sheet" id="save-sheet" hidden>
+      <label class="help" for="save-name">Name this look</label>
+      <div class="save-row">
+        <input id="save-name" class="text-input" maxlength="40" autocomplete="off" spellcheck="false" aria-describedby="save-error">
+        <button type="button" class="key" id="save-confirm">Save</button>
+        <button type="button" class="key" id="save-cancel">Cancel</button>
+      </div>
+      <span id="save-error" class="help is-error" hidden></span>
+      <div class="save-row" id="save-replace" hidden>
+        <span class="help" id="save-replace-text"></span>
+        <button type="button" class="key" id="save-overwrite">Replace</button>
+        <button type="button" class="key" id="save-both">Keep both</button>
+      </div>
+    </div>
+    <div class="browser-slot" id="browser-slot" hidden></div>
+    <button type="button" class="service-toggle caps" id="service" aria-expanded="true" aria-controls="global-slot">Service <i data-lucide="chevron-right"></i></button>
+    <div class="panel-body is-disabled" id="body">
+      <div id="rack"></div>
+      <div id="global-slot"></div>
+    </div>
+    <div class="status" id="status" role="status" hidden></div>
+  </div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

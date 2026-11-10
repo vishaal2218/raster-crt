@@ -1,0 +1,9 @@
+# Raster CRT workspace: the Premiere/After Effects effect, the GPU engine it renders with,
+# and raster-cli (the same engine on PNG files, for tests and preset thumbnails).
+[workspace]
+members = ["effect", "engine", "cli"]
+resolver = "3"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

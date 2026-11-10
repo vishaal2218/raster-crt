@@ -1,0 +1,49 @@
+# Raster CRT build recipes. Run `source ../scripts/env.sh` first so the toolchain and
+# build output are set up.
+#   just test      unit tests
+#   just build     debug plugin bundle, ad-hoc signed
+#   just release   optimised plugin bundle, ad-hoc signed
+
+PluginName := "Raster CRT"
+BinaryName := "raster_crt"
+BundleId   := "com.rastercrt.effect"
+Target     := env_var_or_default("CARGO_TARGET_DIR", "target")
+
+test:
+    cargo test
+
+build:
+    cargo build
+    just bundle debug
+
+release:
+    cargo build --release
+    just bundle release
+
+bundle profile:
+    #!/bin/bash
+    set -euo pipefail
+    src="{{Target}}/{{profile}}"
+    out="$src/{{PluginName}}.plugin"
+    rm -rf "$out"
+    mkdir -p "$out/Contents/Resources" "$out/Contents/MacOS"
+    cp "$src/{{BinaryName}}.rsrc" "$out/Contents/Resources/{{PluginName}}.rsrc"
+    cp "$src/lib{{BinaryName}}.dylib" "$out/Contents/MacOS/{{PluginName}}"
+    # Adobe effect bundles are type 'eFKT', creator 'FXTC'.
+    printf 'eFKTFXTC' > "$out/Contents/PkgInfo"
+    version="$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)"
+    plist="$out/Contents/Info.plist"
+    plutil -create xml1 "$plist"
+    plutil -insert CFBundleExecutable -string "{{PluginName}}" "$plist"
+    plutil -insert CFBundleIdentifier -string "{{BundleId}}" "$plist"
+    plutil -insert CFBundleName -string "{{PluginName}}" "$plist"
+    plutil -insert CFBundlePackageType -string "eFKT" "$plist"
+    plutil -insert CFBundleSignature -string "FXTC" "$plist"
+    plutil -insert CFBundleInfoDictionaryVersion -string "6.0" "$plist"
+    plutil -insert CFBundleShortVersionString -string "$version" "$plist"
+    plutil -insert CFBundleVersion -string "$version" "$plist"
+    plutil -insert CSResourcesFileMapped -bool true "$plist"
+    # Premiere 25.2+ refuses unsigned plugins; an ad-hoc signature is enough on this Mac.
+    codesign --force --options runtime --sign - "$out"
+    codesign --verify --strict "$out"
+    echo "Bundle ready: $out (version $version)"
